@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 
 import Login from "./components/Auth/Login";
@@ -17,7 +18,6 @@ import { apiRequest } from "./services/api";
 import "./App.css";
 import "./components/Layout/Layout.css";
 
-const API_BASE_URL = "http://localhost:8080";
 
 function App() {
 
@@ -65,10 +65,9 @@ function App() {
 
 
   // =========================================================
-  // GET USER NAME FROM JWT
+  // GET USERNAME FROM JWT
   //
-  // This is only a fallback.
-  // If /api/dashboard provides a name, that will be used first.
+  // Fallback only.
   // =========================================================
 
   const getUsernameFromToken = (currentToken) => {
@@ -131,13 +130,16 @@ function App() {
 
 
     // -------------------------------------------------------
-    // FIRST: GET FALLBACK FROM TOKEN
+    // FIRST: GET FALLBACK FROM JWT
     // -------------------------------------------------------
 
     const tokenUsername =
       getUsernameFromToken(currentToken);
 
-    if (tokenUsername && tokenUsername !== "User") {
+    if (
+      tokenUsername &&
+      tokenUsername !== "User"
+    ) {
 
       setUsername(tokenUsername);
 
@@ -149,7 +151,13 @@ function App() {
 
 
     // -------------------------------------------------------
-    // SECOND: GET REAL USER DATA FROM BACKEND
+    // SECOND: GET REAL USER DATA
+    //
+    // apiRequest automatically:
+    // - uses VITE_API_BASE_URL
+    // - adds Authorization header
+    // - handles JSON
+    // - handles errors
     // -------------------------------------------------------
 
     try {
@@ -214,9 +222,6 @@ function App() {
 
     } catch (error) {
 
-      // A 404 can happen if the user has not uploaded
-      // a resume yet. In that case, keep the JWT username.
-
       console.warn(
         "Unable to load user information:",
         error
@@ -227,7 +232,7 @@ function App() {
 
 
   // =========================================================
-  // LOAD USER WHEN LOGIN EXISTS
+  // LOAD USER WHEN LOGGED IN
   // =========================================================
 
   useEffect(() => {
@@ -259,55 +264,41 @@ function App() {
 
     try {
 
-      const response =
-        await fetch(
-          `${API_BASE_URL}/api/dashboard`,
-          {
-            method: "GET",
+      // =====================================================
+      // IMPORTANT
+      //
+      // DO NOT use:
+      //
+      // fetch("http://localhost:8080/...")
+      //
+      // Use apiRequest so Vercel uses:
+      //
+      // VITE_API_BASE_URL
+      //
+      // =====================================================
 
-            headers: {
-              Authorization:
-                `Bearer ${currentToken}`,
-            },
-          }
+      const data =
+        await apiRequest(
+          "/api/dashboard"
         );
 
 
-      // =====================================================
-      // USER HAS NO RESUME
-      // =====================================================
-
-      if (response.status === 404) {
-
-        const text =
-          await response.text();
-
-        console.log(
-          "No resume uploaded yet:",
-          text
-        );
-
-        setResumeData(null);
-        setResumeError("");
-
-        return;
-      }
+      console.log(
+        "Resume dashboard data:",
+        data
+      );
 
 
       // =====================================================
-      // AUTHENTICATION ERROR
+      // AUTHENTICATION CHECK
       // =====================================================
 
-      if (
-        response.status === 401 ||
-        response.status === 403
-      ) {
-
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
+      if (!localStorage.getItem("token")) {
 
         setToken(null);
+
         setResumeData(null);
+
         setUsername("User");
 
         return;
@@ -315,14 +306,26 @@ function App() {
 
 
       // =====================================================
-      // OTHER SERVER ERROR
+      // NO RESUME
+      //
+      // Backend dashboard may return:
+      //
+      // {
+      //   hasResume: false,
+      //   resumes: []
+      // }
+      //
+      // In that case we want the empty state.
       // =====================================================
 
-      if (!response.ok) {
+      if (
+        data &&
+        data.hasResume === false
+      ) {
 
-        throw new Error(
-          "Failed to load resume information."
-        );
+        setResumeData(null);
+
+        return;
       }
 
 
@@ -330,19 +333,11 @@ function App() {
       // SUCCESS
       // =====================================================
 
-      const data =
-        await response.json();
-
-      console.log(
-        "Resume dashboard data:",
-        data
-      );
-
       setResumeData(data);
 
 
       // -----------------------------------------------------
-      // ALSO UPDATE USERNAME FROM DASHBOARD
+      // UPDATE USERNAME FROM DASHBOARD
       // -----------------------------------------------------
 
       const serverUsername =
@@ -367,6 +362,21 @@ function App() {
           "username",
           cleanUsername
         );
+
+      } else if (
+        data?.email &&
+        String(data.email).trim()
+      ) {
+
+        const emailUsername =
+          String(data.email).trim();
+
+        setUsername(emailUsername);
+
+        localStorage.setItem(
+          "username",
+          emailUsername
+        );
       }
 
     } catch (error) {
@@ -376,8 +386,33 @@ function App() {
         error
       );
 
+
+      // =====================================================
+      // SESSION EXPIRED
+      // =====================================================
+
+      if (
+        !localStorage.getItem("token")
+      ) {
+
+        setToken(null);
+
+        setUsername("User");
+
+        setResumeData(null);
+
+        setResumeError("");
+
+        return;
+      }
+
+
+      // =====================================================
+      // OTHER ERROR
+      // =====================================================
+
       setResumeError(
-        error.message ||
+        error?.message ||
         "Unable to load resume information."
       );
 
@@ -420,11 +455,14 @@ function App() {
 
     setToken(jwt);
 
-    // Get an immediate username from the JWT
-    // while the backend request loads.
+
+    // -------------------------------------------------------
+    // GET USERNAME FROM JWT IMMEDIATELY
+    // -------------------------------------------------------
 
     const tokenUsername =
       getUsernameFromToken(jwt);
+
 
     if (
       tokenUsername &&
@@ -448,9 +486,14 @@ function App() {
     }
 
 
+    // -------------------------------------------------------
+    // GO TO DASHBOARD
+    // -------------------------------------------------------
+
     setActivePage("dashboard");
 
     setResumeData(null);
+
     setResumeError("");
   };
 
@@ -462,6 +505,7 @@ function App() {
   const handleLogout = () => {
 
     localStorage.removeItem("token");
+
     localStorage.removeItem("username");
 
     setToken(null);
@@ -572,15 +616,12 @@ function App() {
 
         <main className="page-content">
 
-
           {/* =================================================
               DASHBOARD
           ================================================= */}
 
           {activePage === "dashboard" && (
-
             <Dashboard />
-
           )}
 
 
@@ -589,9 +630,7 @@ function App() {
           ================================================= */}
 
           {activePage === "analytics" && (
-
             <Analytics />
-
           )}
 
 
@@ -603,7 +642,9 @@ function App() {
 
             <div className="resume-page">
 
-              {/* HEADER */}
+              {/* =================================================
+                  HEADER
+              ================================================= */}
 
               <div className="resume-page-header">
 
@@ -626,6 +667,7 @@ function App() {
 
 
                 <button
+                  type="button"
                   className="resume-refresh-button"
                   onClick={loadResumeData}
                   disabled={resumeLoading}
@@ -640,7 +682,9 @@ function App() {
               </div>
 
 
-              {/* ERROR */}
+              {/* =================================================
+                  ERROR
+              ================================================= */}
 
               {resumeError && (
 
@@ -657,7 +701,9 @@ function App() {
               )}
 
 
-              {/* LOADING */}
+              {/* =================================================
+                  LOADING
+              ================================================= */}
 
               {resumeLoading &&
                 !resumeData && (
@@ -675,7 +721,9 @@ function App() {
                 )}
 
 
-              {/* RESUME EXISTS */}
+              {/* =================================================
+                  RESUME EXISTS
+              ================================================= */}
 
               {!resumeLoading &&
                 resumeData && (
@@ -699,7 +747,9 @@ function App() {
                 )}
 
 
-              {/* NO RESUME */}
+              {/* =================================================
+                  NO RESUME
+              ================================================= */}
 
               {!resumeLoading &&
                 !resumeData &&
@@ -743,5 +793,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
