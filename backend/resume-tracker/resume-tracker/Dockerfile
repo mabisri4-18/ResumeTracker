@@ -19,6 +19,6 @@ WORKDIR /app
 
 COPY --from=build /app/target/resume-tracker-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 8080
+EXPOSE 10000
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-10000}"]
