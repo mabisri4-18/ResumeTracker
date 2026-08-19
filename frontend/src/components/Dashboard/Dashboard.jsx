@@ -1,132 +1,588 @@
+
+
 // import { useCallback, useEffect, useState } from "react";
 // import "./Dashboard.css";
 
 // const API_BASE_URL = "http://localhost:8080";
 
+// // =============================================================
+// // DELETE API URL
+// // =============================================================
+// //
+// // Expected Spring Boot endpoint:
+// //
+// // DELETE /api/resumes/{resumeId}
+// //
+// // Example:
+// //
+// // DELETE http://localhost:8080/api/resumes/5
+// //
+// // =============================================================
+
+// const DELETE_RESUME_URL = (resumeId) =>
+//   `${API_BASE_URL}/api/resumes/${resumeId}`;
+
+
 // function Dashboard() {
+
+//   // ===========================================================
+//   // STATE
+//   // ===========================================================
+
 //   const [dashboard, setDashboard] = useState(null);
+
 //   const [loading, setLoading] = useState(true);
+
 //   const [refreshing, setRefreshing] = useState(false);
+
 //   const [error, setError] = useState("");
+
 //   const [copied, setCopied] = useState(false);
 
-//   // =========================================================
+//   // Stores the ID of the resume currently being deleted.
+//   //
+//   // Example:
+//   //
+//   // deletingResumeId = 5
+//   //
+//   // This allows us to show:
+//   //
+//   // "Deleting..."
+//   //
+//   // only on that particular resume.
+
+//   const [deletingResumeId, setDeletingResumeId] =
+//     useState(null);
+
+
+//   // ===========================================================
 //   // LOAD DASHBOARD
-//   // =========================================================
+//   // ===========================================================
 
-//   const loadDashboard = useCallback(async (isRefresh = false) => {
-//     const token = localStorage.getItem("token");
+//   const loadDashboard = useCallback(
+//     async (isRefresh = false) => {
 
-//     if (!token) {
-//       setError("Please login again.");
-//       setLoading(false);
+//       const token =
+//         localStorage.getItem("token");
+
+
+//       // -------------------------------------------------------
+//       // TOKEN CHECK
+//       // -------------------------------------------------------
+
+//       if (!token) {
+
+//         setError(
+//           "Please login again."
+//         );
+
+//         setLoading(false);
+
+//         return;
+//       }
+
+
+//       // -------------------------------------------------------
+//       // LOADING STATE
+//       // -------------------------------------------------------
+
+//       if (isRefresh) {
+
+//         setRefreshing(true);
+
+//       } else {
+
+//         setLoading(true);
+//       }
+
+
+//       setError("");
+
+
+//       // -------------------------------------------------------
+//       // API REQUEST
+//       // -------------------------------------------------------
+
+//       try {
+
+//         const response =
+//           await fetch(
+//             `${API_BASE_URL}/api/dashboard`,
+//             {
+//               method: "GET",
+
+//               headers: {
+//                 Authorization:
+//                   `Bearer ${token}`,
+
+//                 Accept:
+//                   "application/json",
+//               },
+//             }
+//           );
+
+
+//         // -----------------------------------------------------
+//         // AUTH ERROR
+//         // -----------------------------------------------------
+
+//         if (
+//           response.status === 401 ||
+//           response.status === 403
+//         ) {
+
+//           localStorage.removeItem(
+//             "token"
+//           );
+
+//           throw new Error(
+//             "Your session has expired. Please login again."
+//           );
+//         }
+
+
+//         // -----------------------------------------------------
+//         // SERVER ERROR
+//         // -----------------------------------------------------
+
+//         if (!response.ok) {
+
+//           let message =
+//             "Unable to load dashboard.";
+
+
+//           try {
+
+//             const data =
+//               await response.json();
+
+//             message =
+//               data?.message ||
+//               data?.error ||
+//               message;
+
+//           } catch {
+
+//             // Ignore invalid JSON.
+//           }
+
+
+//           throw new Error(
+//             message
+//           );
+//         }
+
+
+//         // -----------------------------------------------------
+//         // SUCCESS
+//         // -----------------------------------------------------
+
+//         const data =
+//           await response.json();
+
+
+//         console.log(
+//           "Dashboard data:",
+//           data
+//         );
+
+
+//         setDashboard(data);
+
+//       } catch (err) {
+
+//         console.error(
+//           "Dashboard loading error:",
+//           err
+//         );
+
+
+//         setError(
+//           err?.message ||
+//           "Unable to load dashboard."
+//         );
+
+//       } finally {
+
+//         setLoading(false);
+
+//         setRefreshing(false);
+//       }
+//     },
+//     []
+//   );
+
+
+//   // ===========================================================
+//   // LOAD DASHBOARD WHEN COMPONENT OPENS
+//   // ===========================================================
+
+//   useEffect(() => {
+
+//     loadDashboard();
+
+//   }, [loadDashboard]);
+
+
+//   // ===========================================================
+//   // REFRESH
+//   // ===========================================================
+
+//   const handleRefresh = () => {
+
+//     loadDashboard(true);
+//   };
+
+
+//   // ===========================================================
+//   // DELETE RESUME
+//   // ===========================================================
+
+//   const handleDeleteResume = async (resume) => {
+
+//     // ---------------------------------------------------------
+//     // GET RESUME ID
+//     // ---------------------------------------------------------
+
+//     const resumeId =
+//       resume?.resumeId ??
+//       resume?.id;
+
+
+//     // ---------------------------------------------------------
+//     // SAFETY CHECK
+//     // ---------------------------------------------------------
+
+//     if (
+//       resumeId === undefined ||
+//       resumeId === null ||
+//       resumeId === ""
+//     ) {
+
+//       alert(
+//         "Unable to delete this resume because its ID is missing."
+//       );
+
 //       return;
 //     }
 
-//     if (isRefresh) {
-//       setRefreshing(true);
-//     } else {
-//       setLoading(true);
-//     }
 
-//     setError("");
+//     // ---------------------------------------------------------
+//     // RESUME NAME
+//     // ---------------------------------------------------------
 
-//     try {
-//       const response = await fetch(
-//         `${API_BASE_URL}/api/dashboard`,
-//         {
-//           method: "GET",
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
+//     const resumeName =
+//       resume?.originalFileName ||
+//       "this resume";
+
+
+//     // ---------------------------------------------------------
+//     // CONFIRMATION
+//     // ---------------------------------------------------------
+
+//     const confirmed =
+//       window.confirm(
+//         `Are you sure you want to delete "${resumeName}"?\n\n` +
+//         `This will permanently delete the resume and its view analytics.\n\n` +
+//         `This action cannot be undone.`
 //       );
 
-//       // =====================================================
+
+//     if (!confirmed) {
+
+//       return;
+//     }
+
+
+//     // ---------------------------------------------------------
+//     // PREVENT DOUBLE DELETE
+//     // ---------------------------------------------------------
+
+//     if (
+//       deletingResumeId !== null
+//     ) {
+
+//       return;
+//     }
+
+
+//     setDeletingResumeId(
+//       resumeId
+//     );
+
+
+//     // ---------------------------------------------------------
+//     // TOKEN
+//     // ---------------------------------------------------------
+
+//     const token =
+//       localStorage.getItem("token");
+
+
+//     if (!token) {
+
+//       setDeletingResumeId(null);
+
+//       alert(
+//         "Your session has expired. Please login again."
+//       );
+
+//       return;
+//     }
+
+
+//     // ---------------------------------------------------------
+//     // DELETE REQUEST
+//     // ---------------------------------------------------------
+
+//     try {
+
+//       console.log(
+//         "Deleting resume:",
+//         resumeId
+//       );
+
+
+//       const response =
+//         await fetch(
+//           DELETE_RESUME_URL(resumeId),
+//           {
+//             method: "DELETE",
+
+//             headers: {
+//               Authorization:
+//                 `Bearer ${token}`,
+
+//               Accept:
+//                 "application/json",
+//             },
+//           }
+//         );
+
+
+//       // -------------------------------------------------------
 //       // AUTH ERROR
-//       // =====================================================
+//       // -------------------------------------------------------
 
 //       if (
 //         response.status === 401 ||
 //         response.status === 403
 //       ) {
-//         localStorage.removeItem("token");
+
+//         localStorage.removeItem(
+//           "token"
+//         );
 
 //         throw new Error(
 //           "Your session has expired. Please login again."
 //         );
 //       }
 
-//       // =====================================================
+
+//       // -------------------------------------------------------
+//       // NOT FOUND
+//       // -------------------------------------------------------
+
+//       if (response.status === 404) {
+
+//         throw new Error(
+//           "Resume was not found. It may already have been deleted."
+//         );
+//       }
+
+
+//       // -------------------------------------------------------
 //       // SERVER ERROR
-//       // =====================================================
+//       // -------------------------------------------------------
 
 //       if (!response.ok) {
-//         let message = "Unable to load dashboard.";
+
+//         let message =
+//           "Unable to delete the resume.";
+
 
 //         try {
-//           const data = await response.json();
+
+//           const data =
+//             await response.json();
 
 //           message =
 //             data?.message ||
 //             data?.error ||
 //             message;
+
 //         } catch {
-//           // Ignore invalid JSON
+
+//           // Ignore invalid JSON.
 //         }
 
-//         throw new Error(message);
+
+//         throw new Error(
+//           message
+//         );
 //       }
 
-//       // =====================================================
+
+//       // -------------------------------------------------------
 //       // SUCCESS
-//       // =====================================================
+//       // -------------------------------------------------------
 
-//       const data = await response.json();
+//       console.log(
+//         "Resume deleted successfully:",
+//         resumeId
+//       );
 
-//       console.log("Dashboard data:", data);
 
-//       setDashboard(data);
+//       // -------------------------------------------------------
+//       // REMOVE IT IMMEDIATELY FROM UI
+//       // -------------------------------------------------------
+
+//       setDashboard((previousDashboard) => {
+
+//         if (!previousDashboard) {
+
+//           return previousDashboard;
+//         }
+
+
+//         const previousResumes =
+//           Array.isArray(
+//             previousDashboard.resumes
+//           )
+//             ? previousDashboard.resumes
+//             : [];
+
+
+//         const updatedResumes =
+//           previousResumes.filter(
+//             (item) =>
+//               String(
+//                 item?.resumeId ??
+//                 item?.id
+//               ) !==
+//               String(resumeId)
+//           );
+
+
+//         // -----------------------------------------------------
+//         // RECALCULATE ANALYTICS
+//         // -----------------------------------------------------
+
+//         const totalViews =
+//           updatedResumes.reduce(
+//             (total, item) =>
+//               total +
+//               Number(
+//                 item?.totalViews || 0
+//               ),
+//             0
+//           );
+
+
+//         const todayViews =
+//           updatedResumes.reduce(
+//             (total, item) =>
+//               total +
+//               Number(
+//                 item?.todayViews || 0
+//               ),
+//             0
+//           );
+
+
+//         const weekViews =
+//           updatedResumes.reduce(
+//             (total, item) =>
+//               total +
+//               Number(
+//                 item?.weekViews || 0
+//               ),
+//             0
+//           );
+
+
+//         const monthViews =
+//           updatedResumes.reduce(
+//             (total, item) =>
+//               total +
+//               Number(
+//                 item?.monthViews || 0
+//               ),
+//             0
+//           );
+
+
+//         return {
+//           ...previousDashboard,
+
+//           resumes:
+//             updatedResumes,
+
+//           resumeCount:
+//             updatedResumes.length,
+
+//           totalResumes:
+//             updatedResumes.length,
+
+//           totalViews,
+
+//           todayViews,
+
+//           weekViews,
+
+//           monthViews,
+
+//           hasResume:
+//             updatedResumes.length > 0,
+//         };
+//       });
+
+
+//       // -------------------------------------------------------
+//       // REFRESH FROM BACKEND
+//       // -------------------------------------------------------
+
+//       await loadDashboard(true);
+
+
+//       // -------------------------------------------------------
+//       // SUCCESS MESSAGE
+//       // -------------------------------------------------------
+
+//       console.log(
+//         "Dashboard refreshed after delete."
+//       );
 
 //     } catch (err) {
+
 //       console.error(
-//         "Dashboard loading error:",
+//         "Delete resume error:",
 //         err
 //       );
 
-//       setError(
+
+//       alert(
 //         err?.message ||
-//         "Unable to load dashboard."
+//         "Unable to delete the resume."
 //       );
 
 //     } finally {
-//       setLoading(false);
-//       setRefreshing(false);
+
+//       setDeletingResumeId(
+//         null
+//       );
 //     }
-//   }, []);
-
-//   // =========================================================
-//   // LOAD DASHBOARD WHEN COMPONENT OPENS
-//   // =========================================================
-
-//   useEffect(() => {
-//     loadDashboard();
-//   }, [loadDashboard]);
-
-//   // =========================================================
-//   // REFRESH
-//   // =========================================================
-
-//   const handleRefresh = () => {
-//     loadDashboard(true);
 //   };
 
-//   // =========================================================
+
+//   // ===========================================================
 //   // LOADING
-//   // =========================================================
+//   // ===========================================================
 
 //   if (loading) {
+
 //     return (
+
 //       <main className="dashboard dashboard-state">
 
 //         <div className="dashboard-loader">
@@ -147,12 +603,15 @@
 //     );
 //   }
 
-//   // =========================================================
+
+//   // ===========================================================
 //   // ERROR
-//   // =========================================================
+//   // ===========================================================
 
 //   if (error) {
+
 //     return (
+
 //       <main className="dashboard dashboard-state">
 
 //         <div className="dashboard-error-card">
@@ -172,7 +631,9 @@
 //           <button
 //             type="button"
 //             className="retry-button"
-//             onClick={() => loadDashboard()}
+//             onClick={() =>
+//               loadDashboard()
+//             }
 //           >
 //             Try Again
 //           </button>
@@ -183,44 +644,56 @@
 //     );
 //   }
 
-//   // =========================================================
-//   // BASIC DATA
-//   // =========================================================
 
-//   const resumes = Array.isArray(
-//     dashboard?.resumes
-//   )
-//     ? dashboard.resumes
-//     : [];
+//   // ===========================================================
+//   // BASIC DATA
+//   // ===========================================================
+
+//   const resumes =
+//     Array.isArray(
+//       dashboard?.resumes
+//     )
+//       ? dashboard.resumes
+//       : [];
+
 
 //   const email =
 //     dashboard?.email ||
 //     "-";
 
-//   // =========================================================
+
+//   // ===========================================================
 //   // SORT RESUMES
-//   // =========================================================
+//   // ===========================================================
 
-//   const sortedResumes = [...resumes].sort(
-//     (a, b) => {
+//   const sortedResumes =
+//     [...resumes].sort(
+//       (a, b) => {
 
-//       const dateA = a?.uploadedAt
-//         ? new Date(a.uploadedAt).getTime()
-//         : 0;
+//         const dateA =
+//           a?.uploadedAt
+//             ? new Date(
+//                 a.uploadedAt
+//               ).getTime()
+//             : 0;
 
-//       const dateB = b?.uploadedAt
-//         ? new Date(b.uploadedAt).getTime()
-//         : 0;
 
-//       return dateB - dateA;
-//     }
-//   );
+//         const dateB =
+//           b?.uploadedAt
+//             ? new Date(
+//                 b.uploadedAt
+//               ).getTime()
+//             : 0;
 
-//   // =========================================================
-//   // OVERALL ANALYTICS
-//   //
-//   // THESE ARE FOR ALL UPLOADED RESUMES.
-//   // =========================================================
+
+//         return dateB - dateA;
+//       }
+//     );
+
+
+//   // ===========================================================
+//   // CALCULATED ANALYTICS
+//   // ===========================================================
 
 //   const calculatedTotalViews =
 //     resumes.reduce(
@@ -232,6 +705,7 @@
 //       0
 //     );
 
+
 //   const calculatedTodayViews =
 //     resumes.reduce(
 //       (total, resume) =>
@@ -241,6 +715,7 @@
 //         ),
 //       0
 //     );
+
 
 //   const calculatedWeekViews =
 //     resumes.reduce(
@@ -252,6 +727,7 @@
 //       0
 //     );
 
+
 //   const calculatedMonthViews =
 //     resumes.reduce(
 //       (total, resume) =>
@@ -262,126 +738,237 @@
 //       0
 //     );
 
+
+//   // ===========================================================
+//   // TOTAL VIEWS
+//   // ===========================================================
+
 //   const totalViews =
-//     dashboard?.totalViews !== undefined &&
-//     dashboard?.totalViews !== null
+//     dashboard?.totalViews !==
+//       undefined &&
+//     dashboard?.totalViews !==
+//       null
 //       ? Number(
 //           dashboard.totalViews
 //         )
 //       : calculatedTotalViews;
 
+
+//   // ===========================================================
+//   // TODAY VIEWS
+//   // ===========================================================
+
 //   const todayViews =
-//     dashboard?.todayViews !== undefined &&
-//     dashboard?.todayViews !== null
+//     dashboard?.todayViews !==
+//       undefined &&
+//     dashboard?.todayViews !==
+//       null
 //       ? Number(
 //           dashboard.todayViews
 //         )
 //       : calculatedTodayViews;
 
+
+//   // ===========================================================
+//   // WEEK VIEWS
+//   // ===========================================================
+
 //   const weekViews =
-//     dashboard?.weekViews !== undefined &&
-//     dashboard?.weekViews !== null
+//     dashboard?.weekViews !==
+//       undefined &&
+//     dashboard?.weekViews !==
+//       null
 //       ? Number(
 //           dashboard.weekViews
 //         )
 //       : calculatedWeekViews;
 
+
+//   // ===========================================================
+//   // MONTH VIEWS
+//   // ===========================================================
+
 //   const monthViews =
-//     dashboard?.monthViews !== undefined &&
-//     dashboard?.monthViews !== null
+//     dashboard?.monthViews !==
+//       undefined &&
+//     dashboard?.monthViews !==
+//       null
 //       ? Number(
 //           dashboard.monthViews
 //         )
 //       : calculatedMonthViews;
 
+
+//   // ===========================================================
+//   // TOTAL RESUMES
+//   // ===========================================================
+
 //   const totalResumes =
-//     dashboard?.totalResumes !== undefined &&
-//     dashboard?.totalResumes !== null
+//     dashboard?.totalResumes !==
+//       undefined &&
+//     dashboard?.totalResumes !==
+//       null
 //       ? Number(
 //           dashboard.totalResumes
 //         )
 //       : resumes.length;
 
-//   // =========================================================
+
+//   // ===========================================================
 //   // LATEST RESUME
-//   // =========================================================
+//   // ===========================================================
 
 //   const latestResume =
+//     sortedResumes[0] ||
 //     dashboard?.currentResume ||
 //     dashboard?.latestResume ||
-//     sortedResumes[0] ||
 //     null;
 
-//   // =========================================================
+
+//   // ===========================================================
 //   // PUBLIC URL
-//   // =========================================================
+//   // ===========================================================
 
 //   const publicResumeUrl =
 //     latestResume?.resumeSlug
 //       ? `${API_BASE_URL}/r/${latestResume.resumeSlug}`
 //       : "";
 
-//   // =========================================================
+
+//   // ===========================================================
 //   // COPY LINK
-//   // =========================================================
+//   // ===========================================================
 
-//   const handleCopyLink = async () => {
+//   const handleCopyLink =
+//     async () => {
 
-//     if (!publicResumeUrl) {
-//       return;
-//     }
+//       if (!publicResumeUrl) {
 
-//     try {
+//         return;
+//       }
 
-//       await navigator.clipboard.writeText(
-//         publicResumeUrl
-//       );
 
-//       setCopied(true);
+//       try {
 
-//       setTimeout(() => {
-//         setCopied(false);
-//       }, 2000);
+//         await navigator.clipboard.writeText(
+//           publicResumeUrl
+//         );
 
-//     } catch (err) {
 
-//       console.error(
-//         "Unable to copy link:",
-//         err
-//       );
+//         setCopied(true);
 
-//     }
-//   };
 
-//   // =========================================================
+//         setTimeout(
+//           () => {
+
+//             setCopied(false);
+
+//           },
+//           2000
+//         );
+
+//       } catch (err) {
+
+//         console.error(
+//           "Unable to copy link:",
+//           err
+//         );
+
+
+//         // Fallback for browsers where
+//         // navigator.clipboard is unavailable.
+
+//         try {
+
+//           const textArea =
+//             document.createElement(
+//               "textarea"
+//             );
+
+
+//           textArea.value =
+//             publicResumeUrl;
+
+
+//           document.body.appendChild(
+//             textArea
+//           );
+
+
+//           textArea.select();
+
+
+//           document.execCommand(
+//             "copy"
+//           );
+
+
+//           document.body.removeChild(
+//             textArea
+//           );
+
+
+//           setCopied(true);
+
+
+//           setTimeout(
+//             () => {
+
+//               setCopied(false);
+
+//             },
+//             2000
+//           );
+
+//         } catch (fallbackError) {
+
+//           console.error(
+//             "Copy fallback failed:",
+//             fallbackError
+//           );
+
+//         }
+//       }
+//     };
+
+
+//   // ===========================================================
 //   // DATE FORMAT
-//   // =========================================================
+//   // ===========================================================
 
-//   const formatDate = (date) => {
+//   const formatDate =
+//     (date) => {
 
-//     if (!date) {
-//       return "-";
-//     }
+//       if (!date) {
 
-//     const parsedDate =
-//       new Date(date);
+//         return "-";
+//       }
 
-//     if (
-//       Number.isNaN(
-//         parsedDate.getTime()
-//       )
-//     ) {
-//       return "-";
-//     }
 
-//     return parsedDate.toLocaleString();
-//   };
+//       const parsedDate =
+//         new Date(date);
 
-//   // =========================================================
+
+//       if (
+//         Number.isNaN(
+//           parsedDate.getTime()
+//         )
+//       ) {
+
+//         return "-";
+//       }
+
+
+//       return parsedDate.toLocaleString();
+//     };
+
+
+//   // ===========================================================
 //   // RENDER
-//   // =========================================================
+//   // ===========================================================
 
 //   return (
+
 //     <main className="dashboard">
 
 //       {/* =====================================================
@@ -406,6 +993,7 @@
 //           </p>
 
 //         </div>
+
 
 //         <button
 //           type="button"
@@ -459,6 +1047,7 @@
 
 //         </div>
 
+
 //         <div className="welcome-decoration">
 
 //           <div className="decoration-circle circle-a" />
@@ -497,6 +1086,7 @@
 
 //           </div>
 
+
 //           <div className="resume-count-badge">
 
 //             <span className="resume-count-dot" />
@@ -514,7 +1104,7 @@
 
 //         <div className="stats-grid">
 
-//           {/* TOTAL VIEWS */}
+//           {/* TOTAL */}
 
 //           <div className="stat-card stat-card-primary">
 
@@ -525,6 +1115,7 @@
 //               </div>
 
 //             </div>
+
 
 //             <div className="stat-card-content">
 
@@ -557,6 +1148,7 @@
 
 //             </div>
 
+
 //             <div className="stat-card-content">
 
 //               <p className="stat-title">
@@ -588,6 +1180,7 @@
 
 //             </div>
 
+
 //             <div className="stat-card-content">
 
 //               <p className="stat-title">
@@ -618,6 +1211,7 @@
 //               </div>
 
 //             </div>
+
 
 //             <div className="stat-card-content">
 
@@ -671,7 +1265,9 @@
 
 //         <div className="overview-grid">
 
-//           {/* RESUME DETAILS */}
+//           {/* =================================================
+//               RESUME DETAILS
+//           ================================================= */}
 
 //           <article className="overview-card">
 
@@ -705,6 +1301,7 @@
 //                   <div className="current-resume-pdf">
 //                     PDF
 //                   </div>
+
 
 //                   <div className="current-resume-file-info">
 
@@ -764,7 +1361,8 @@
 //                     </span>
 
 //                     <strong>
-//                       {latestResume.totalViews ?? 0}
+//                       {latestResume.totalViews ??
+//                         0}
 //                     </strong>
 
 //                   </div>
@@ -812,7 +1410,9 @@
 //           </article>
 
 
-//           {/* PUBLIC LINK */}
+//           {/* =================================================
+//               PUBLIC LINK
+//           ================================================= */}
 
 //           <article className="overview-card public-card">
 
@@ -842,10 +1442,8 @@
 //               <>
 
 //                 <p className="public-description">
-
 //                   Share your latest resume with
 //                   recruiters and employers.
-
 //                 </p>
 
 
@@ -867,6 +1465,7 @@
 //                     </a>
 
 //                   </div>
+
 
 //                   <button
 //                     type="button"
@@ -955,12 +1554,22 @@
 //                   resume?.originalFileName ||
 //                   "Unnamed Resume";
 
+
 //                 const resumeId =
-//                   resume?.resumeId ||
-//                   resume?.id ||
-//                   "-";
+//                   resume?.resumeId ??
+//                   resume?.id;
+
+
+//                 const isDeleting =
+//                   deletingResumeId !== null &&
+//                   String(
+//                     deletingResumeId
+//                   ) ===
+//                   String(resumeId);
+
 
 //                 return (
+
 //                   <div
 //                     className="resume-summary-item"
 //                     key={
@@ -970,26 +1579,39 @@
 //                     }
 //                   >
 
+//                     {/* =======================================
+//                         LEFT SIDE
+//                     ======================================= */}
+
 //                     <div className="resume-summary-left">
 
 //                       <div className="resume-summary-icon">
 //                         PDF
 //                       </div>
 
+
 //                       <div className="resume-summary-info">
 
-//                         <strong title={resumeName}>
+//                         <strong
+//                           title={resumeName}
+//                         >
 //                           {resumeName}
 //                         </strong>
 
+
 //                         <span>
-//                           Resume ID: {resumeId}
+//                           Resume ID:{" "}
+//                           {resumeId ?? "-"}
 //                         </span>
 
 //                       </div>
 
 //                     </div>
 
+
+//                     {/* =======================================
+//                         STATS
+//                     ======================================= */}
 
 //                     <div className="resume-summary-stats">
 
@@ -1000,7 +1622,8 @@
 //                         </span>
 
 //                         <strong>
-//                           {resume?.totalViews ?? 0}
+//                           {resume?.totalViews ??
+//                             0}
 //                         </strong>
 
 //                       </div>
@@ -1013,7 +1636,8 @@
 //                         </span>
 
 //                         <strong>
-//                           {resume?.todayViews ?? 0}
+//                           {resume?.todayViews ??
+//                             0}
 //                         </strong>
 
 //                       </div>
@@ -1026,7 +1650,8 @@
 //                         </span>
 
 //                         <strong>
-//                           {resume?.weekViews ?? 0}
+//                           {resume?.weekViews ??
+//                             0}
 //                         </strong>
 
 //                       </div>
@@ -1039,10 +1664,40 @@
 //                         </span>
 
 //                         <strong>
-//                           {resume?.monthViews ?? 0}
+//                           {resume?.monthViews ??
+//                             0}
 //                         </strong>
 
 //                       </div>
+
+//                     </div>
+
+
+//                     {/* =======================================
+//                         DELETE BUTTON
+//                     ======================================= */}
+
+//                     <div className="resume-summary-actions">
+
+//                       <button
+//                         type="button"
+//                         className="delete-resume-button"
+//                         onClick={() =>
+//                           handleDeleteResume(
+//                             resume
+//                           )
+//                         }
+//                         disabled={
+//                           deletingResumeId !== null
+//                         }
+//                         title="Delete this resume"
+//                       >
+
+//                         {isDeleting
+//                           ? "Deleting..."
+//                           : "Delete"}
+
+//                       </button>
 
 //                     </div>
 
@@ -1057,34 +1712,70 @@
 
 //       )}
 
+
+//       {/* =====================================================
+//           NO RESUMES
+//       ===================================================== */}
+
+//       {resumes.length === 0 && (
+
+//         <section className="dashboard-section">
+
+//           <div className="overview-empty">
+
+//             <div className="overview-empty-icon">
+//               📄
+//             </div>
+
+//             <h3>
+//               No resumes available
+//             </h3>
+
+//             <p>
+//               Upload a resume to start
+//               tracking your resume performance.
+//             </p>
+
+//           </div>
+
+//         </section>
+
+//       )}
+
 //     </main>
 //   );
 // }
 
-// export default Dashboard;
 
+// export default Dashboard;
 
 
 
 import { useCallback, useEffect, useState } from "react";
 import "./Dashboard.css";
 
-const API_BASE_URL = "http://localhost:8080";
+/*
+ * API BASE URL
+ *
+ * Local development:
+ *   VITE_API_URL=http://localhost:8080
+ *
+ * Production/Vercel:
+ *   VITE_API_URL=https://resumetracker-b3a2.onrender.com
+ *
+ * IMPORTANT:
+ * Do NOT hardcode localhost here.
+ */
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:8080"
+).replace(/\/$/, "");
 
-// =============================================================
-// DELETE API URL
-// =============================================================
-//
-// Expected Spring Boot endpoint:
-//
-// DELETE /api/resumes/{resumeId}
-//
-// Example:
-//
-// DELETE http://localhost:8080/api/resumes/5
-//
-// =============================================================
 
+/*
+ * DELETE API URL
+ *
+ * DELETE /api/resumes/{resumeId}
+ */
 const DELETE_RESUME_URL = (resumeId) =>
   `${API_BASE_URL}/api/resumes/${resumeId}`;
 
@@ -1104,18 +1795,6 @@ function Dashboard() {
   const [error, setError] = useState("");
 
   const [copied, setCopied] = useState(false);
-
-  // Stores the ID of the resume currently being deleted.
-  //
-  // Example:
-  //
-  // deletingResumeId = 5
-  //
-  // This allows us to show:
-  //
-  // "Deleting..."
-  //
-  // only on that particular resume.
 
   const [deletingResumeId, setDeletingResumeId] =
     useState(null);
@@ -1170,6 +1849,12 @@ function Dashboard() {
       // -------------------------------------------------------
 
       try {
+
+        console.log(
+          "Loading dashboard from:",
+          `${API_BASE_URL}/api/dashboard`
+        );
+
 
         const response =
           await fetch(
@@ -1228,7 +1913,6 @@ function Dashboard() {
               message;
 
           } catch {
-
             // Ignore invalid JSON.
           }
 
@@ -1306,18 +1990,10 @@ function Dashboard() {
 
   const handleDeleteResume = async (resume) => {
 
-    // ---------------------------------------------------------
-    // GET RESUME ID
-    // ---------------------------------------------------------
-
     const resumeId =
       resume?.resumeId ??
       resume?.id;
 
-
-    // ---------------------------------------------------------
-    // SAFETY CHECK
-    // ---------------------------------------------------------
 
     if (
       resumeId === undefined ||
@@ -1333,18 +2009,10 @@ function Dashboard() {
     }
 
 
-    // ---------------------------------------------------------
-    // RESUME NAME
-    // ---------------------------------------------------------
-
     const resumeName =
       resume?.originalFileName ||
       "this resume";
 
-
-    // ---------------------------------------------------------
-    // CONFIRMATION
-    // ---------------------------------------------------------
 
     const confirmed =
       window.confirm(
@@ -1360,10 +2028,6 @@ function Dashboard() {
     }
 
 
-    // ---------------------------------------------------------
-    // PREVENT DOUBLE DELETE
-    // ---------------------------------------------------------
-
     if (
       deletingResumeId !== null
     ) {
@@ -1376,10 +2040,6 @@ function Dashboard() {
       resumeId
     );
 
-
-    // ---------------------------------------------------------
-    // TOKEN
-    // ---------------------------------------------------------
 
     const token =
       localStorage.getItem("token");
@@ -1396,10 +2056,6 @@ function Dashboard() {
       return;
     }
 
-
-    // ---------------------------------------------------------
-    // DELETE REQUEST
-    // ---------------------------------------------------------
 
     try {
 
@@ -1478,7 +2134,6 @@ function Dashboard() {
             message;
 
         } catch {
-
           // Ignore invalid JSON.
         }
 
@@ -1500,7 +2155,7 @@ function Dashboard() {
 
 
       // -------------------------------------------------------
-      // REMOVE IT IMMEDIATELY FROM UI
+      // REMOVE FROM UI
       // -------------------------------------------------------
 
       setDashboard((previousDashboard) => {
@@ -1610,10 +2265,6 @@ function Dashboard() {
 
       await loadDashboard(true);
 
-
-      // -------------------------------------------------------
-      // SUCCESS MESSAGE
-      // -------------------------------------------------------
 
       console.log(
         "Dashboard refreshed after delete."
@@ -1810,10 +2461,8 @@ function Dashboard() {
   // ===========================================================
 
   const totalViews =
-    dashboard?.totalViews !==
-      undefined &&
-    dashboard?.totalViews !==
-      null
+    dashboard?.totalViews !== undefined &&
+    dashboard?.totalViews !== null
       ? Number(
           dashboard.totalViews
         )
@@ -1825,10 +2474,8 @@ function Dashboard() {
   // ===========================================================
 
   const todayViews =
-    dashboard?.todayViews !==
-      undefined &&
-    dashboard?.todayViews !==
-      null
+    dashboard?.todayViews !== undefined &&
+    dashboard?.todayViews !== null
       ? Number(
           dashboard.todayViews
         )
@@ -1840,10 +2487,8 @@ function Dashboard() {
   // ===========================================================
 
   const weekViews =
-    dashboard?.weekViews !==
-      undefined &&
-    dashboard?.weekViews !==
-      null
+    dashboard?.weekViews !== undefined &&
+    dashboard?.weekViews !== null
       ? Number(
           dashboard.weekViews
         )
@@ -1855,10 +2500,8 @@ function Dashboard() {
   // ===========================================================
 
   const monthViews =
-    dashboard?.monthViews !==
-      undefined &&
-    dashboard?.monthViews !==
-      null
+    dashboard?.monthViews !== undefined &&
+    dashboard?.monthViews !== null
       ? Number(
           dashboard.monthViews
         )
@@ -1870,10 +2513,8 @@ function Dashboard() {
   // ===========================================================
 
   const totalResumes =
-    dashboard?.totalResumes !==
-      undefined &&
-    dashboard?.totalResumes !==
-      null
+    dashboard?.totalResumes !== undefined &&
+    dashboard?.totalResumes !== null
       ? Number(
           dashboard.totalResumes
         )
@@ -1940,9 +2581,6 @@ function Dashboard() {
           err
         );
 
-
-        // Fallback for browsers where
-        // navigator.clipboard is unavailable.
 
         try {
 
@@ -2037,10 +2675,6 @@ function Dashboard() {
 
     <main className="dashboard">
 
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
       <header className="dashboard-page-header">
 
         <div className="dashboard-page-header-content">
@@ -2080,10 +2714,6 @@ function Dashboard() {
 
       </header>
 
-
-      {/* =====================================================
-          WELCOME
-      ===================================================== */}
 
       <section className="welcome-banner">
 
@@ -2127,10 +2757,6 @@ function Dashboard() {
       </section>
 
 
-      {/* =====================================================
-          OVERALL ANALYTICS
-      ===================================================== */}
-
       <section className="dashboard-section">
 
         <div className="section-heading">
@@ -2170,8 +2796,6 @@ function Dashboard() {
 
         <div className="stats-grid">
 
-          {/* TOTAL */}
-
           <div className="stat-card stat-card-primary">
 
             <div className="stat-card-top">
@@ -2201,8 +2825,6 @@ function Dashboard() {
 
           </div>
 
-
-          {/* TODAY */}
 
           <div className="stat-card stat-card-blue">
 
@@ -2234,8 +2856,6 @@ function Dashboard() {
           </div>
 
 
-          {/* WEEK */}
-
           <div className="stat-card stat-card-green">
 
             <div className="stat-card-top">
@@ -2265,8 +2885,6 @@ function Dashboard() {
 
           </div>
 
-
-          {/* MONTH */}
 
           <div className="stat-card stat-card-purple">
 
@@ -2302,10 +2920,6 @@ function Dashboard() {
       </section>
 
 
-      {/* =====================================================
-          LATEST RESUME
-      ===================================================== */}
-
       <section className="dashboard-section">
 
         <div className="section-heading">
@@ -2330,10 +2944,6 @@ function Dashboard() {
 
 
         <div className="overview-grid">
-
-          {/* =================================================
-              RESUME DETAILS
-          ================================================= */}
 
           <article className="overview-card">
 
@@ -2476,10 +3086,6 @@ function Dashboard() {
           </article>
 
 
-          {/* =================================================
-              PUBLIC LINK
-          ================================================= */}
-
           <article className="overview-card public-card">
 
             <div className="overview-card-header">
@@ -2581,10 +3187,6 @@ function Dashboard() {
       </section>
 
 
-      {/* =====================================================
-          RESUME PERFORMANCE
-      ===================================================== */}
-
       {resumes.length > 0 && (
 
         <section className="dashboard-section">
@@ -2645,10 +3247,6 @@ function Dashboard() {
                     }
                   >
 
-                    {/* =======================================
-                        LEFT SIDE
-                    ======================================= */}
-
                     <div className="resume-summary-left">
 
                       <div className="resume-summary-icon">
@@ -2675,10 +3273,6 @@ function Dashboard() {
                     </div>
 
 
-                    {/* =======================================
-                        STATS
-                    ======================================= */}
-
                     <div className="resume-summary-stats">
 
                       <div>
@@ -2688,8 +3282,7 @@ function Dashboard() {
                         </span>
 
                         <strong>
-                          {resume?.totalViews ??
-                            0}
+                          {resume?.totalViews ?? 0}
                         </strong>
 
                       </div>
@@ -2702,8 +3295,7 @@ function Dashboard() {
                         </span>
 
                         <strong>
-                          {resume?.todayViews ??
-                            0}
+                          {resume?.todayViews ?? 0}
                         </strong>
 
                       </div>
@@ -2716,8 +3308,7 @@ function Dashboard() {
                         </span>
 
                         <strong>
-                          {resume?.weekViews ??
-                            0}
+                          {resume?.weekViews ?? 0}
                         </strong>
 
                       </div>
@@ -2730,18 +3321,13 @@ function Dashboard() {
                         </span>
 
                         <strong>
-                          {resume?.monthViews ??
-                            0}
+                          {resume?.monthViews ?? 0}
                         </strong>
 
                       </div>
 
                     </div>
 
-
-                    {/* =======================================
-                        DELETE BUTTON
-                    ======================================= */}
 
                     <div className="resume-summary-actions">
 
@@ -2778,10 +3364,6 @@ function Dashboard() {
 
       )}
 
-
-      {/* =====================================================
-          NO RESUMES
-      ===================================================== */}
 
       {resumes.length === 0 && (
 
