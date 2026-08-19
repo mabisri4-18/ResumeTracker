@@ -3,6 +3,7 @@ package com.resume.tracker.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,15 +13,21 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private final String SECRET_KEY =
-            "resumeTrackerSecretKeyForJwtAuthentication123456789";
+    private final String secretKey;
 
     private final long EXPIRATION_TIME =
-            1000 * 60 * 60;
+            1000L * 60 * 60;
+
+    public JwtService(
+            @Value("${jwt.secret}") String secretKey) {
+
+        this.secretKey = secretKey;
+    }
 
     private SecretKey getSigningKey() {
+
         return Keys.hmacShaKeyFor(
-                SECRET_KEY.getBytes(StandardCharsets.UTF_8)
+                secretKey.getBytes(StandardCharsets.UTF_8)
         );
     }
 
@@ -48,12 +55,15 @@ public class JwtService {
     public boolean isTokenValid(String token) {
 
         try {
-            Claims claims = extractAllClaims(token);
+
+            Claims claims =
+                    extractAllClaims(token);
 
             return claims.getExpiration()
                     .after(new Date());
 
         } catch (Exception e) {
+
             return false;
         }
     }
