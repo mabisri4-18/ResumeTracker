@@ -15,7 +15,7 @@ import ResumeUpload from "./components/Resume/ResumeUpload";
 import { apiRequest } from "./services/api";
 
 import "./App.css";
-import "./components/Layout/layout.css";
+import "./components/Layout/Layout.css";
 
 const API_BASE_URL = "http://localhost:8080";
 
