@@ -1,0 +1,1700 @@
+/* =========================================================
+   ANALYTICS PAGE
+========================================================= */
+
+.analytics-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
+
+  animation: analyticsFadeIn 0.4s ease;
+}
+
+@keyframes analyticsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.analytics-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.analytics-header h1 {
+  margin: 6px 0 8px;
+
+  color: #111827;
+
+  font-size: 32px;
+  font-weight: 750;
+  line-height: 1.2;
+
+  letter-spacing: -0.8px;
+}
+
+.analytics-header p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.page-eyebrow {
+  display: inline-block;
+
+  color: #6366f1;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 1.4px;
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.analytics-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/* =========================================================
+   TRACKING STATUS
+========================================================= */
+
+.analytics-status {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 10px 15px;
+
+  border: 1px solid #dcfce7;
+  border-radius: 999px;
+
+  background: #f0fdf4;
+
+  color: #15803d;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+========================================================= */
+
+.analytics-refresh-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 40px;
+
+  padding: 9px 15px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.analytics-refresh-button:hover {
+  border-color: #c7d2fe;
+
+  background: #f8f7ff;
+
+  color: #4f46e5;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 14px rgba(15, 23, 42, 0.06);
+}
+
+.analytics-refresh-button:active {
+  transform: translateY(0);
+}
+
+.analytics-refresh-button:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.18);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   STATISTICS GRID
+========================================================= */
+
+.analytics-stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
+
+  margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   STAT CARD
+========================================================= */
+
+.analytics-stat-card {
+  position: relative;
+
+  overflow: hidden;
+
+  min-height: 150px;
+
+  padding: 22px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 16px rgba(15, 23, 42, 0.04);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.analytics-stat-card::after {
+  content: "";
+
+  position: absolute;
+
+  right: -30px;
+  bottom: -45px;
+
+  width: 110px;
+  height: 110px;
+
+  border-radius: 50%;
+
+  background: rgba(99, 102, 241, 0.05);
+
+  pointer-events: none;
+}
+
+.analytics-stat-card:hover {
+  transform: translateY(-4px);
+
+  border-color: #d7d9ff;
+
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================================
+   STAT TOP
+========================================================= */
+
+.analytics-stat-top {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.analytics-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+
+  background: #f5f3ff;
+
+  font-size: 19px;
+}
+
+.analytics-stat-label {
+  color: #6b7280;
+
+  font-size: 13px;
+  font-weight: 650;
+}
+
+
+/* =========================================================
+   STAT VALUE
+========================================================= */
+
+.analytics-stat-value {
+  position: relative;
+  z-index: 1;
+
+  margin-top: 17px;
+
+  color: #111827;
+
+  font-size: 30px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  letter-spacing: -0.8px;
+}
+
+.analytics-stat-card p {
+  position: relative;
+  z-index: 1;
+
+  margin: 9px 0 0;
+
+  color: #9ca3af;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   STAT CARD VARIANTS
+========================================================= */
+
+.analytics-stat-card.total .analytics-stat-icon {
+  background: #f5f3ff;
+}
+
+.analytics-stat-card.today .analytics-stat-icon {
+  background: #eff6ff;
+}
+
+.analytics-stat-card.week .analytics-stat-icon {
+  background: #f0fdf4;
+}
+
+.analytics-stat-card.month .analytics-stat-icon {
+  background: #fff7ed;
+}
+
+
+/* =========================================================
+   CONTENT GRID
+========================================================= */
+
+.analytics-content-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.7fr)
+    minmax(300px, 1fr);
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   COMMON CARDS
+========================================================= */
+
+.analytics-overview-card,
+.analytics-resume-card,
+.analytics-resume-performance,
+.recent-views-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
+
+.section-heading {
+  padding: 24px 24px 0;
+}
+
+.analytics-section-label {
+  display: inline-block;
+
+  color: #6366f1;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.2px;
+}
+
+.section-heading h2 {
+  margin: 5px 0 5px;
+
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+.section-heading p {
+  margin: 0;
+
+  color: #9ca3af;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   VIEW OVERVIEW
+========================================================= */
+
+.overview-content {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.85fr)
+    minmax(0, 1.15fr);
+
+  gap: 35px;
+
+  padding: 30px 24px 26px;
+}
+
+
+/* =========================================================
+   OVERVIEW MAIN
+========================================================= */
+
+.overview-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-width: 0;
+
+  padding-right: 25px;
+
+  border-right: 1px solid #f0f0f0;
+}
+
+.overview-main > span {
+  color: #6b7280;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.overview-main > strong {
+  margin: 10px 0;
+
+  color: #111827;
+
+  font-size: 46px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  letter-spacing: -1.5px;
+}
+
+.overview-main p {
+  max-width: 260px;
+
+  margin: 0;
+
+  color: #9ca3af;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.overview-main p strong {
+  color: #6366f1;
+}
+
+
+/* =========================================================
+   ANALYTICS BARS
+========================================================= */
+
+.overview-bars {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 23px;
+
+  min-width: 0;
+}
+
+.overview-bar-item {
+  width: 100%;
+}
+
+.bar-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 9px;
+}
+
+.bar-label span {
+  color: #6b7280;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.bar-label strong {
+  color: #111827;
+
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.bar-track {
+  width: 100%;
+  height: 8px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #f1f5f9;
+}
+
+.bar-fill {
+  height: 100%;
+
+  min-width: 0;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #6366f1,
+      #818cf8
+    );
+
+  transition:
+    width 0.6s ease;
+}
+
+
+/* =========================================================
+   RESUME SUMMARY CARD
+========================================================= */
+
+.analytics-resume-card {
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   RESUME COUNT
+========================================================= */
+
+.analytics-resume-count {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin: 24px 24px 0;
+
+  padding: 15px;
+
+  border: 1px solid #eef0f4;
+  border-radius: 14px;
+
+  background: #f8fafc;
+}
+
+.analytics-resume-count-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 11px;
+
+  background: #ede9fe;
+
+  font-size: 20px;
+}
+
+.analytics-resume-count strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.analytics-resume-count span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RESUME PREVIEW
+========================================================= */
+
+.resume-preview {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin: 14px 24px 20px;
+
+  padding: 17px;
+
+  border: 1px solid #eef0f4;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.resume-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 12px;
+
+  background: #ede9fe;
+
+  color: #6366f1;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+}
+
+.resume-preview-info {
+  min-width: 0;
+}
+
+.resume-preview-info h3 {
+  overflow: hidden;
+
+  margin: 0 0 5px;
+
+  color: #1f2937;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resume-preview-info span {
+  color: #9ca3af;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   RESUME DETAILS
+========================================================= */
+
+.resume-analytics-details {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  border-top: 1px solid #f0f0f0;
+}
+
+.resume-analytics-details > div {
+  padding: 17px 24px;
+}
+
+.resume-analytics-details > div + div {
+  border-left: 1px solid #f0f0f0;
+}
+
+.resume-analytics-details span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+}
+
+.resume-analytics-details strong {
+  color: #374151;
+
+  font-size: 13px;
+}
+
+.resume-analytics-details .active-status {
+  color: #16a34a;
+}
+
+
+/* =========================================================
+   RESUME EMPTY
+========================================================= */
+
+.resume-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 210px;
+
+  padding: 35px 24px;
+
+  text-align: center;
+}
+
+.resume-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 54px;
+  height: 54px;
+
+  margin-bottom: 13px;
+
+  border-radius: 15px;
+
+  background: #f5f3ff;
+
+  font-size: 24px;
+}
+
+.resume-empty h3 {
+  margin: 0 0 6px;
+
+  color: #374151;
+
+  font-size: 15px;
+}
+
+.resume-empty p {
+  max-width: 270px;
+
+  margin: 0;
+
+  color: #9ca3af;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESUME PERFORMANCE
+========================================================= */
+
+.analytics-resume-performance {
+  overflow: hidden;
+
+  margin-bottom: 24px;
+}
+
+.analytics-resume-list {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 22px;
+}
+
+.analytics-resume-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding: 18px 24px;
+
+  border-top: 1px solid #f0f0f0;
+
+  transition:
+    background 0.2s ease;
+}
+
+.analytics-resume-item:hover {
+  background: #fafaff;
+}
+
+
+/* =========================================================
+   RESUME PERFORMANCE LEFT
+========================================================= */
+
+.analytics-resume-item-left {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  min-width: 0;
+}
+
+.analytics-resume-pdf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 11px;
+
+  background: #ede9fe;
+
+  color: #6366f1;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+}
+
+.analytics-resume-item-left > div:last-child {
+  min-width: 0;
+}
+
+.analytics-resume-item-left strong {
+  display: block;
+
+  max-width: 360px;
+
+  overflow: hidden;
+
+  margin-bottom: 4px;
+
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.analytics-resume-item-left span {
+  display: block;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RESUME PERFORMANCE STATS
+========================================================= */
+
+.analytics-resume-item-stats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(60px, 1fr));
+
+  gap: 24px;
+
+  flex-shrink: 0;
+}
+
+.analytics-resume-item-stats > div {
+  min-width: 55px;
+
+  text-align: center;
+}
+
+.analytics-resume-item-stats span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #9ca3af;
+
+  font-size: 10px;
+  font-weight: 650;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+}
+
+.analytics-resume-item-stats strong {
+  color: #111827;
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   RECENT VIEWS SECTION
+========================================================= */
+
+.recent-views-section {
+  width: 100%;
+
+  margin-bottom: 24px;
+}
+
+.recent-views-card {
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   RECENT VIEWS HEADER
+========================================================= */
+
+.recent-views-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 24px;
+
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.recent-views-header h2 {
+  margin: 5px 0;
+
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.recent-views-header p {
+  margin: 0;
+
+  color: #9ca3af;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   VIEW COUNT
+========================================================= */
+
+.view-count {
+  padding: 8px 13px;
+
+  border-radius: 9px;
+
+  background: #f5f3ff;
+
+  color: #6366f1;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.recent-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.recent-views-table {
+  width: 100%;
+
+  min-width: 850px;
+
+  border-collapse: collapse;
+
+  table-layout: auto;
+}
+
+.recent-views-table th {
+  padding: 14px 24px;
+
+  background: #fafafa;
+
+  color: #9ca3af;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  text-align: left;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+
+  white-space: nowrap;
+}
+
+.recent-views-table td {
+  padding: 16px 24px;
+
+  border-top: 1px solid #f3f4f6;
+
+  color: #4b5563;
+
+  font-size: 13px;
+
+  vertical-align: middle;
+}
+
+.recent-views-table tbody tr {
+  transition:
+    background 0.2s ease;
+}
+
+.recent-views-table tbody tr:hover {
+  background: #fafaff;
+}
+
+
+/* =========================================================
+   VISITOR
+========================================================= */
+
+.visitor-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  min-width: 170px;
+}
+
+.visitor-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 10px;
+
+  background: #f3f4f6;
+
+  font-size: 15px;
+}
+
+.visitor-cell strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.visitor-cell span {
+  display: block;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RESUME NAME
+========================================================= */
+
+.resume-name-cell {
+  display: inline-block;
+
+  max-width: 190px;
+
+  overflow: hidden;
+
+  color: #374151;
+
+  font-size: 12px;
+  font-weight: 650;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  vertical-align: middle;
+}
+
+
+/* =========================================================
+   DEVICE
+========================================================= */
+
+.device-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 5px 9px;
+
+  border-radius: 7px;
+
+  background: #f8fafc;
+
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 650;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.date-cell {
+  color: #6b7280;
+
+  font-size: 12px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   IP
+========================================================= */
+
+.ip-cell {
+  color: #6b7280;
+
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+
+  font-size: 11px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   REFERRER
+========================================================= */
+
+.referrer-badge {
+  display: inline-block;
+
+  max-width: 170px;
+
+  overflow: hidden;
+
+  padding: 5px 9px;
+
+  border-radius: 7px;
+
+  background: #f8fafc;
+
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  vertical-align: middle;
+}
+
+
+/* =========================================================
+   EMPTY VIEWS
+========================================================= */
+
+.no-views {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 250px;
+
+  padding: 40px 20px;
+
+  text-align: center;
+}
+
+.no-views-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 58px;
+  height: 58px;
+
+  margin-bottom: 14px;
+
+  border-radius: 16px;
+
+  background: #f5f3ff;
+
+  font-size: 25px;
+}
+
+.no-views h3 {
+  margin: 0 0 6px;
+
+  color: #374151;
+
+  font-size: 15px;
+}
+
+.no-views p {
+  max-width: 340px;
+
+  margin: 0;
+
+  color: #9ca3af;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   ANALYTICS LOADING / ERROR STATES
+========================================================= */
+
+.analytics-state {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 55vh;
+
+  padding: 40px;
+
+  text-align: center;
+}
+
+.analytics-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 70px;
+  height: 70px;
+
+  margin-bottom: 18px;
+
+  border-radius: 20px;
+
+  background: #f5f3ff;
+
+  font-size: 30px;
+}
+
+.analytics-state h2 {
+  margin: 0 0 8px;
+
+  color: #111827;
+
+  font-size: 20px;
+  font-weight: 750;
+}
+
+.analytics-state p {
+  max-width: 420px;
+
+  margin: 0;
+
+  color: #9ca3af;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   RETRY BUTTON
+========================================================= */
+
+.analytics-retry-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
+
+  margin-top: 20px;
+
+  padding: 10px 18px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #6366f1;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.analytics-retry-button:hover {
+  background: #4f46e5;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 18px rgba(99, 102, 241, 0.22);
+}
+
+.analytics-retry-button:active {
+  transform: translateY(0);
+}
+
+.analytics-retry-button:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.18);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .analytics-page {
+    padding: 28px;
+  }
+
+  .analytics-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .analytics-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-resume-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .analytics-resume-item-stats {
+    width: 100%;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET / SMALL LAPTOP
+========================================================= */
+
+@media (max-width: 850px) {
+
+  .analytics-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .analytics-header-actions {
+    width: 100%;
+  }
+
+  .analytics-refresh-button {
+    margin-left: auto;
+  }
+
+  .overview-content {
+    grid-template-columns: 1fr;
+
+    gap: 25px;
+  }
+
+  .overview-main {
+    padding-right: 0;
+    padding-bottom: 24px;
+
+    border-right: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .analytics-page {
+    padding: 22px 18px;
+  }
+
+  .analytics-header h1 {
+    font-size: 27px;
+  }
+
+  .analytics-header-actions {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .analytics-status {
+    align-self: flex-start;
+  }
+
+  .analytics-stats-grid {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+  }
+
+  .analytics-stat-card {
+    min-height: 135px;
+
+    padding: 17px;
+  }
+
+  .analytics-stat-value {
+    font-size: 26px;
+  }
+
+  .analytics-stat-label {
+    font-size: 12px;
+  }
+
+  .analytics-stat-card p {
+    font-size: 11px;
+  }
+
+  .overview-main > strong {
+    font-size: 40px;
+  }
+
+  .recent-views-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .view-count {
+    align-self: flex-start;
+  }
+
+  .analytics-resume-item-stats {
+    grid-template-columns:
+      repeat(4, minmax(55px, 1fr));
+
+    gap: 12px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 520px) {
+
+  .analytics-page {
+    padding: 18px 14px;
+  }
+
+  .analytics-header {
+    margin-bottom: 22px;
+  }
+
+  .analytics-header h1 {
+    font-size: 25px;
+  }
+
+  .analytics-header p {
+    font-size: 13px;
+  }
+
+  .analytics-header-actions {
+    width: 100%;
+
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .analytics-status {
+    justify-content: center;
+
+    width: 100%;
+  }
+
+  .analytics-refresh-button {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+  .analytics-stats-grid {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+  }
+
+  .analytics-stat-card {
+    min-height: 125px;
+
+    padding: 18px;
+  }
+
+  .analytics-stat-value {
+    font-size: 28px;
+  }
+
+  .section-heading {
+    padding: 20px 18px 0;
+  }
+
+  .overview-content {
+    padding: 24px 18px;
+  }
+
+  .overview-main > strong {
+    font-size: 38px;
+  }
+
+  .analytics-resume-count {
+    margin-right: 18px;
+    margin-left: 18px;
+  }
+
+  .resume-preview {
+    margin-right: 18px;
+    margin-left: 18px;
+  }
+
+  .resume-analytics-details > div {
+    padding: 15px 18px;
+  }
+
+  .analytics-resume-item {
+    padding: 17px 18px;
+  }
+
+  .analytics-resume-item-stats {
+    grid-template-columns: 1fr 1fr;
+
+    width: 100%;
+
+    gap: 10px;
+  }
+
+  .analytics-resume-item-stats > div {
+    padding: 10px;
+
+    border: 1px solid #f0f0f0;
+    border-radius: 9px;
+
+    background: #fafafa;
+  }
+
+  .recent-views-header {
+    padding: 20px 18px;
+  }
+
+  .recent-views-table th,
+  .recent-views-table td {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 360px) {
+
+  .analytics-page {
+    padding: 16px 11px;
+  }
+
+  .analytics-header h1 {
+    font-size: 23px;
+  }
+
+  .analytics-stat-card {
+    padding: 16px;
+  }
+
+  .analytics-stat-icon {
+    width: 38px;
+    height: 38px;
+
+    font-size: 17px;
+  }
+
+  .analytics-stat-value {
+    font-size: 26px;
+  }
+
+  .section-heading {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .overview-content {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+}

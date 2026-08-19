@@ -1,0 +1,648 @@
+/* =========================================
+   APP
+========================================= */
+
+/* =========================================
+   GLOBAL FONT - POPPINS
+========================================= */
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  min-height: 100vh;
+
+  font-family: "Poppins", sans-serif;
+
+  background: #f8fafc;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+
+  font-family: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: "Poppins", sans-serif;
+}
+
+
+/* =========================================
+   ROOT
+========================================= */
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+
+/* =========================================
+   APP LAYOUT
+========================================= */
+
+.app-layout {
+  display: flex;
+
+  width: 100%;
+  min-height: 100vh;
+
+  background: #f8fafc;
+}
+
+
+/* =========================================
+   MAIN AREA
+========================================= */
+
+.main-area {
+  flex: 1;
+
+  min-width: 0;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #f8fafc;
+}
+
+
+/* =========================================
+   PAGE CONTENT
+========================================= */
+
+/*
+   THIS IS THE IMPORTANT PART.
+
+   The extra top space is created here.
+   It gives the page content more breathing
+   room below the Topbar.
+*/
+
+.page-content {
+  width: 100%;
+
+  flex: 1;
+
+  padding: 36px 40px 50px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   RESUME PAGE
+========================================= */
+
+.resume-page {
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================
+   RESUME PAGE HEADER
+========================================= */
+
+/*
+   Extra space before MY RESUME.
+
+   Increase padding-top if you want it even
+   lower on the page.
+*/
+
+.resume-page-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  width: 100%;
+
+  margin-bottom: 32px;
+
+  padding-top: 20px;
+}
+
+
+/* =========================================
+   RESUME PAGE HEADER TEXT
+========================================= */
+
+.resume-page-header > div {
+  min-width: 0;
+}
+
+
+/* =========================================
+   SECTION LABEL
+========================================= */
+
+.section-label {
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  letter-spacing: 1.2px;
+
+  color: #6366f1;
+}
+
+
+/* =========================================
+   RESUME PAGE TITLE
+========================================= */
+
+.resume-page-header h1 {
+  margin: 0;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  line-height: 1.25;
+
+  color: #111827;
+}
+
+
+/* =========================================
+   RESUME PAGE DESCRIPTION
+========================================= */
+
+.resume-page-header p {
+  margin: 9px 0 0;
+
+  font-size: 14px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+
+/* =========================================
+   REFRESH BUTTON
+========================================= */
+
+.resume-refresh-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  min-height: 40px;
+
+  padding: 0 16px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #374151;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.resume-refresh-button:hover:not(:disabled) {
+  border-color: #c7d2fe;
+
+  background: #f8faff;
+
+  color: #4f46e5;
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+
+.resume-refresh-button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================
+   RESUME PAGE ERROR
+========================================= */
+
+.resume-page-error {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+
+  margin-bottom: 24px;
+
+  padding: 13px 15px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+
+  background: #fef2f2;
+
+  color: #b91c1c;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+.resume-page-error span {
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #fee2e2;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   RESUME PAGE LOADING
+========================================= */
+
+.resume-page-loading {
+  min-height: 300px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+}
+
+
+.resume-page-loading p {
+  margin: 15px 0 0;
+
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+
+/* =========================================
+   PAGE SPINNER
+========================================= */
+
+.page-spinner {
+  width: 32px;
+  height: 32px;
+
+  border: 3px solid #e5e7eb;
+
+  border-top-color: #4f46e5;
+
+  border-radius: 50%;
+
+  animation: page-spin 0.75s linear infinite;
+}
+
+
+@keyframes page-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================
+   RESUME EMPTY STATE
+========================================= */
+
+.resume-empty-state {
+  width: 100%;
+
+  padding: 32px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+}
+
+
+.resume-empty-state .empty-icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 16px;
+
+  border-radius: 15px;
+
+  background: #eef2ff;
+
+  font-size: 26px;
+}
+
+
+.resume-empty-state h2 {
+  margin: 0 0 8px;
+
+  font-size: 19px;
+  font-weight: 700;
+
+  color: #374151;
+}
+
+
+.resume-empty-state > p {
+  margin: 0 0 24px;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+
+/* =========================================
+   GENERAL LOADING
+========================================= */
+
+.loading-state {
+  min-height: 400px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #64748b;
+}
+
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+
+  border: 4px solid #e2e8f0;
+
+  border-top-color: #4f46e5;
+
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+
+  margin-bottom: 16px;
+}
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================
+   APP ERROR
+========================================= */
+
+.app-error {
+  padding: 24px;
+
+  background: #fff1f2;
+
+  border: 1px solid #fecdd3;
+
+  border-radius: 12px;
+
+  color: #9f1239;
+}
+
+
+.app-error strong {
+  display: block;
+
+  margin-bottom: 8px;
+}
+
+
+.app-error p {
+  margin: 0 0 16px;
+}
+
+
+.app-error button {
+  padding: 10px 18px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #4f46e5;
+
+  color: #ffffff;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .page-content {
+    padding: 32px 28px 44px;
+  }
+
+
+  .resume-page-header {
+    padding-top: 16px;
+  }
+
+
+  .resume-page-header h1 {
+    font-size: 26px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL TABLET
+========================================= */
+
+@media (max-width: 900px) {
+
+  .page-content {
+    padding: 30px 24px 40px;
+  }
+
+
+  .resume-page-header {
+    gap: 20px;
+
+    margin-bottom: 28px;
+
+    padding-top: 14px;
+  }
+
+
+  .resume-page-header h1 {
+    font-size: 24px;
+  }
+
+
+  .resume-page-header p {
+    font-size: 13px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .page-content {
+    padding: 24px 16px 36px;
+  }
+
+
+  .resume-page-header {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 16px;
+
+    margin-bottom: 24px;
+
+    padding-top: 12px;
+  }
+
+
+  .resume-page-header h1 {
+    font-size: 22px;
+  }
+
+
+  .resume-page-header p {
+    margin-top: 7px;
+
+    font-size: 12px;
+  }
+
+
+  .resume-refresh-button {
+    align-self: flex-start;
+
+    min-height: 38px;
+
+    padding: 0 14px;
+  }
+
+
+  .resume-empty-state {
+    padding: 24px 18px;
+  }
+
+
+  .resume-page-loading {
+    min-height: 250px;
+
+    padding: 30px 20px;
+  }
+
+}
+
+
+/* =========================================
+   VERY SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+
+  .page-content {
+    padding: 20px 12px 30px;
+  }
+
+
+  .resume-page-header {
+    padding-top: 10px;
+  }
+
+
+  .resume-page-header h1 {
+    font-size: 20px;
+  }
+
+}
