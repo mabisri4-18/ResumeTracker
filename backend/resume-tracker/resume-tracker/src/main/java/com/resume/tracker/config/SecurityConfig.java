@@ -1,9 +1,7 @@
 package com.resume.tracker.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,18 +29,11 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    private final String frontendUrl;
-
     public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter,
-            @Value("${FRONTEND_URL:http://localhost:5173}")
-            String frontendUrl) {
+            JwtAuthenticationFilter jwtAuthenticationFilter) {
 
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-
-        this.frontendUrl = frontendUrl
-                .trim()
-                .replaceAll("/+$", "");
+        this.jwtAuthenticationFilter =
+                jwtAuthenticationFilter;
     }
 
     // =========================================================
@@ -56,7 +47,7 @@ public class SecurityConfig {
     }
 
     // =========================================================
-    // CORS CONFIGURATION
+    // CORS
     // =========================================================
 
     @Bean
@@ -65,41 +56,21 @@ public class SecurityConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        /*
-         * Production Vercel frontend:
-         *
-         * https://resume-tracker-delta.vercel.app
-         *
-         * Local frontend:
-         *
-         * http://localhost:5173
-         */
+        // -----------------------------------------------------
+        // ALLOWED ORIGINS
+        // -----------------------------------------------------
 
-        List<String> allowedOrigins =
-                new ArrayList<>();
-
-        allowedOrigins.add(
-                frontendUrl
+        configuration.setAllowedOriginPatterns(
+                List.of(
+                        "http://localhost:5173",
+                        "http://127.0.0.1:5173",
+                        "https://*.vercel.app"
+                )
         );
 
-        /*
-         * Always allow local development.
-         */
-        if (!allowedOrigins.contains(
-                "http://localhost:5173")) {
-
-            allowedOrigins.add(
-                    "http://localhost:5173"
-            );
-        }
-
-        configuration.setAllowedOrigins(
-                allowedOrigins
-        );
-
-        // -------------------------------------------------------
+        // -----------------------------------------------------
         // ALLOWED METHODS
-        // -------------------------------------------------------
+        // -----------------------------------------------------
 
         configuration.setAllowedMethods(
                 List.of(
@@ -112,23 +83,17 @@ public class SecurityConfig {
                 )
         );
 
-        // -------------------------------------------------------
+        // -----------------------------------------------------
         // ALLOWED HEADERS
-        // -------------------------------------------------------
+        // -----------------------------------------------------
 
         configuration.setAllowedHeaders(
-                List.of(
-                        "Authorization",
-                        "Content-Type",
-                        "Accept",
-                        "Origin",
-                        "X-Requested-With"
-                )
+                List.of("*")
         );
 
-        // -------------------------------------------------------
+        // -----------------------------------------------------
         // EXPOSED HEADERS
-        // -------------------------------------------------------
+        // -----------------------------------------------------
 
         configuration.setExposedHeaders(
                 List.of(
@@ -136,22 +101,21 @@ public class SecurityConfig {
                 )
         );
 
-        /*
-         * Your frontend sends Authorization: Bearer ...
-         *
-         * Credentials must therefore be enabled if your
-         * frontend/backend configuration requires them.
-         */
+        // -----------------------------------------------------
+        // CREDENTIALS
+        // -----------------------------------------------------
+
         configuration.setAllowCredentials(true);
 
-        /*
-         * Cache preflight response for 1 hour.
-         */
+        // -----------------------------------------------------
+        // PREFLIGHT CACHE
+        // -----------------------------------------------------
+
         configuration.setMaxAge(3600L);
 
-        // -------------------------------------------------------
-        // REGISTER CORS CONFIGURATION
-        // -------------------------------------------------------
+        // -----------------------------------------------------
+        // REGISTER
+        // -----------------------------------------------------
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
@@ -165,7 +129,7 @@ public class SecurityConfig {
     }
 
     // =========================================================
-    // SECURITY FILTER CHAIN
+    // SECURITY
     // =========================================================
 
     @Bean
@@ -193,7 +157,7 @@ public class SecurityConfig {
                 )
 
                 // -------------------------------------------------
-                // SESSION
+                // STATELESS JWT
                 // -------------------------------------------------
 
                 .sessionManagement(session ->
@@ -208,36 +172,26 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        /*
-                         * VERY IMPORTANT:
-                         *
-                         * Allow browser CORS preflight requests.
-                         */
+                        // CORS PREFLIGHT
                         .requestMatchers(
                                 HttpMethod.OPTIONS,
                                 "/**"
                         )
                         .permitAll()
 
-                        /*
-                         * Login / Register
-                         */
+                        // AUTH
                         .requestMatchers(
                                 "/api/auth/**"
                         )
                         .permitAll()
 
-                        /*
-                         * Public resume
-                         */
+                        // PUBLIC RESUME
                         .requestMatchers(
                                 "/r/**"
                         )
                         .permitAll()
 
-                        /*
-                         * Everything else requires JWT.
-                         */
+                        // EVERYTHING ELSE
                         .anyRequest()
                         .authenticated()
                 )
