@@ -826,3 +826,42 @@
   color: #4f46e5;
   text-decoration: underline;
 }
+
+
+/* =========================================
+   PASSWORD SHOW / HIDE
+========================================= */
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  padding: 4px;
+
+  font-size: 16px;
+
+  color: #666;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle:hover {
+  color: #222;
+}
+
+.password-input-wrapper input {
+  padding-right: 45px;
+}
