@@ -827,41 +827,47 @@
   text-decoration: underline;
 }
 
-
-/* =========================================
-   PASSWORD SHOW / HIDE
-========================================= */
-
-.password-input-wrapper {
-  position: relative;
-}
+/* =========================================================
+   PASSWORD VISIBILITY BUTTON
+   ========================================================= */
 
 .password-toggle {
   position: absolute;
+
   right: 12px;
   top: 50%;
+
   transform: translateY(-50%);
 
   border: none;
   background: transparent;
 
-  cursor: pointer;
-
   padding: 4px;
 
-  font-size: 16px;
+  cursor: pointer;
 
-  color: #666;
+  font-size: 18px;
+
+  line-height: 1;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  color: #6b7280;
+
+  z-index: 2;
 }
 
 .password-toggle:hover {
-  color: #222;
+  color: #111827;
 }
 
-.password-input-wrapper input {
+
+/* Make sure the password input leaves
+   enough room for the eye button */
+
+.input-wrapper input[type="password"],
+.input-wrapper input[type="text"] {
   padding-right: 45px;
 }

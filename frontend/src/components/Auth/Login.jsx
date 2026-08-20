@@ -475,30 +475,43 @@
 // export default Login;
 
 
+
 import { useState } from "react";
 import { login } from "../../services/authService";
 import "./Login.css";
 
 function Login({ onLogin, onGoToRegister }) {
+
+  // =========================================================
+  // FORM STATE
+  // =========================================================
+
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
 
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState("");
 
-  // =========================================
+
+  // =========================================================
   // LOGIN
-  // =========================================
+  // =========================================================
 
   const handleSubmit = async (event) => {
+
     event.preventDefault();
 
     setError("");
+
     setLoading(true);
 
     try {
+
       const data = await login(
         email,
         password
@@ -509,22 +522,30 @@ function Login({ onLogin, onGoToRegister }) {
         data
       );
 
-      // =========================================
+
+      // =====================================================
       // GET JWT TOKEN
-      // =========================================
+      // =====================================================
 
       const jwt =
         data?.token ||
         data?.jwt ||
         data?.accessToken;
 
+
       if (!jwt) {
+
         throw new Error(
           "Login succeeded, but no JWT token was returned."
         );
+
       }
 
-      // Send JWT to App.jsx
+
+      // =====================================================
+      // SEND JWT TO APP
+      // =====================================================
+
       onLogin(jwt);
 
     } catch (error) {
@@ -546,12 +567,19 @@ function Login({ onLogin, onGoToRegister }) {
     }
   };
 
+
+  // =========================================================
+  // UI
+  // =========================================================
+
   return (
+
     <div className="login-page">
 
-      {/* =====================================
+
+      {/* =====================================================
           BACKGROUND
-      ===================================== */}
+      ===================================================== */}
 
       <div className="login-background">
 
@@ -566,11 +594,13 @@ function Login({ onLogin, onGoToRegister }) {
 
       <div className="login-container">
 
-        {/* =====================================
+
+        {/* ===================================================
             LEFT INFORMATION SECTION
-        ===================================== */}
+        =================================================== */}
 
         <div className="login-info">
+
 
           {/* BRAND */}
 
@@ -621,11 +651,12 @@ function Login({ onLogin, onGoToRegister }) {
           </div>
 
 
-          {/* =====================================
+          {/* =================================================
               FEATURES
-          ===================================== */}
+          ================================================= */}
 
           <div className="feature-list">
+
 
             {/* FEATURE 1 */}
 
@@ -700,15 +731,14 @@ function Login({ onLogin, onGoToRegister }) {
         </div>
 
 
-        {/* =====================================
+        {/* ===================================================
             LOGIN CARD
-        ===================================== */}
+        =================================================== */}
 
         <div className="login-card">
 
-          {/* =====================================
-              CARD HEADER
-          ===================================== */}
+
+          {/* CARD HEADER */}
 
           <div className="login-card-header">
 
@@ -727,18 +757,19 @@ function Login({ onLogin, onGoToRegister }) {
           </div>
 
 
-          {/* =====================================
+          {/* =================================================
               LOGIN FORM
-          ===================================== */}
+          ================================================= */}
 
           <form
             className="login-form"
             onSubmit={handleSubmit}
           >
 
-            {/* =================================
+
+            {/* =================================================
                 EMAIL
-            ================================= */}
+            ================================================= */}
 
             <div className="form-group">
 
@@ -771,9 +802,9 @@ function Login({ onLogin, onGoToRegister }) {
             </div>
 
 
-            {/* =================================
+            {/* =================================================
                 PASSWORD
-            ================================= */}
+            ================================================= */}
 
             <div className="form-group">
 
@@ -800,11 +831,12 @@ function Login({ onLogin, onGoToRegister }) {
               </div>
 
 
-              <div className="input-wrapper password-input-wrapper">
+              <div className="input-wrapper">
 
                 <span className="input-icon">
                   •
                 </span>
+
 
                 <input
                   id="password"
@@ -824,7 +856,10 @@ function Login({ onLogin, onGoToRegister }) {
                   autoComplete="current-password"
                 />
 
-                {/* SHOW / HIDE PASSWORD */}
+
+                {/* =================================================
+                    PASSWORD VISIBILITY BUTTON
+                ================================================= */}
 
                 <button
                   type="button"
@@ -846,7 +881,9 @@ function Login({ onLogin, onGoToRegister }) {
                       : "Show password"
                   }
                 >
-                  {showPassword ? "◉" : "◉"}
+
+                  {showPassword ? "🙈" : "👁"}
+
                 </button>
 
               </div>
@@ -854,9 +891,9 @@ function Login({ onLogin, onGoToRegister }) {
             </div>
 
 
-            {/* =================================
+            {/* =================================================
                 ERROR
-            ================================= */}
+            ================================================= */}
 
             {error && (
 
@@ -875,9 +912,9 @@ function Login({ onLogin, onGoToRegister }) {
             )}
 
 
-            {/* =================================
+            {/* =================================================
                 LOGIN BUTTON
-            ================================= */}
+            ================================================= */}
 
             <button
               type="submit"
@@ -888,19 +925,23 @@ function Login({ onLogin, onGoToRegister }) {
               {loading ? (
 
                 <>
+
                   <span className="spinner"></span>
 
                   Signing in...
+
                 </>
 
               ) : (
 
                 <>
+
                   Sign in
 
                   <span className="button-arrow">
                     →
                   </span>
+
                 </>
 
               )}
@@ -910,9 +951,9 @@ function Login({ onLogin, onGoToRegister }) {
           </form>
 
 
-          {/* =====================================
+          {/* =================================================
               REGISTER LINK
-          ===================================== */}
+          ================================================= */}
 
           <div
             className="register-link-container"
@@ -933,9 +974,9 @@ function Login({ onLogin, onGoToRegister }) {
           </div>
 
 
-          {/* =====================================
+          {/* =================================================
               DIVIDER
-          ===================================== */}
+          ================================================= */}
 
           <div className="login-divider">
 
@@ -946,9 +987,9 @@ function Login({ onLogin, onGoToRegister }) {
           </div>
 
 
-          {/* =====================================
-              FOOTER TEXT
-          ===================================== */}
+          {/* =================================================
+              FOOTER
+          ================================================= */}
 
           <p className="login-footer">
 
@@ -962,9 +1003,9 @@ function Login({ onLogin, onGoToRegister }) {
       </div>
 
 
-      {/* =====================================
+      {/* =====================================================
           COPYRIGHT
-      ===================================== */}
+      ===================================================== */}
 
       <div className="login-copyright">
 
