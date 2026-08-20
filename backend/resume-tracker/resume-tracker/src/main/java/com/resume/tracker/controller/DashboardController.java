@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,23 @@ public class DashboardController {
     private final ResumeRepository resumeRepository;
     private final ResumeViewService resumeViewService;
 
+    /*
+     * ISO-8601 formatter with timezone/offset.
+     *
+     * Example:
+     *
+     * 2026-08-20T09:52:09Z
+     *
+     * or
+     *
+     * 2026-08-20T15:22:09+05:30
+     *
+     * The browser can correctly convert this to the user's
+     * local timezone.
+     */
+    private static final DateTimeFormatter VIEWED_AT_FORMATTER =
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
     public DashboardController(
             UserRepository userRepository,
             ResumeRepository resumeRepository,
@@ -38,6 +57,48 @@ public class DashboardController {
         this.resumeRepository = resumeRepository;
         this.resumeViewService = resumeViewService;
     }
+
+    // =========================================================
+    // FORMAT VIEWED TIME WITH TIMEZONE
+    // =========================================================
+
+    private String formatViewedAt(
+            LocalDateTime viewedAt) {
+
+        if (viewedAt == null) {
+            return null;
+        }
+
+        /*
+         * LocalDateTime.now() is generated using the backend
+         * server's timezone.
+         *
+         * Therefore we attach the same server timezone here.
+         *
+         * On Render, if the server runs in UTC:
+         *
+         * 2026-08-20T09:52:09
+         *
+         * becomes:
+         *
+         * 2026-08-20T09:52:09Z
+         *
+         * The React browser will then automatically convert
+         * it to the user's local timezone.
+         *
+         * For India:
+         *
+         * 09:52 UTC
+         *
+         * becomes:
+         *
+         * 15:22 IST
+         */
+        return viewedAt
+                .atZone(ZoneId.systemDefault())
+                .format(VIEWED_AT_FORMATTER);
+    }
+
 
     // =========================================================
     // DASHBOARD
@@ -50,6 +111,7 @@ public class DashboardController {
         try {
 
             if (authentication == null) {
+
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
                         .body(
@@ -60,15 +122,18 @@ public class DashboardController {
                         );
             }
 
-            String username = authentication.getName();
+            String username =
+                    authentication.getName();
 
-            User user = userRepository
-                    .findByUsername(username)
-                    .orElseThrow(() ->
-                            new RuntimeException(
-                                    "Authenticated user not found"
-                            )
-                    );
+            User user =
+                    userRepository
+                            .findByUsername(username)
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Authenticated user not found"
+                                    )
+                            );
+
 
             // -------------------------------------------------
             // GET ALL RESUMES OF USER
@@ -76,6 +141,7 @@ public class DashboardController {
 
             List<Resume> resumes =
                     resumeRepository.findByUser(user);
+
 
             // -------------------------------------------------
             // NO RESUMES
@@ -134,6 +200,7 @@ public class DashboardController {
                 return ResponseEntity.ok(response);
             }
 
+
             // -------------------------------------------------
             // DATE RANGES
             // -------------------------------------------------
@@ -158,9 +225,9 @@ public class DashboardController {
             LocalDateTime startOfThisMonth =
                     startOfMonth.atStartOfDay();
 
+
             // -------------------------------------------------
             // TOTAL ANALYTICS
-            // ACROSS ALL RESUMES
             // -------------------------------------------------
 
             long totalViews = 0;
@@ -168,8 +235,10 @@ public class DashboardController {
             long weekViews = 0;
             long monthViews = 0;
 
+
             List<Map<String, Object>> resumeResponses =
                     new ArrayList<>();
+
 
             // -------------------------------------------------
             // PROCESS EACH RESUME
@@ -200,10 +269,12 @@ public class DashboardController {
                                 startOfThisMonth
                         );
 
+
                 totalViews += resumeTotalViews;
                 todayViews += resumeTodayViews;
                 weekViews += resumeWeekViews;
                 monthViews += resumeMonthViews;
+
 
                 // -------------------------------------------------
                 // RESUME DATA
@@ -262,8 +333,9 @@ public class DashboardController {
                         resumeMonthViews
                 );
 
+
                 // -------------------------------------------------
-                // RECENT VIEWS FOR THIS RESUME
+                // RECENT VIEWS
                 // -------------------------------------------------
 
                 List<ResumeView> views =
@@ -271,12 +343,15 @@ public class DashboardController {
                                 resume
                         );
 
+
                 List<ResumeViewResponse> viewResponses =
                         views.stream()
                                 .limit(5)
                                 .map(view ->
                                         new ResumeViewResponse(
-                                                view.getViewedAt(),
+                                                formatViewedAt(
+                                                        view.getViewedAt()
+                                                ),
                                                 view.getIpAddress(),
                                                 view.getUserAgent(),
                                                 view.getReferrer()
@@ -284,15 +359,18 @@ public class DashboardController {
                                 )
                                 .toList();
 
+
                 resumeData.put(
                         "views",
                         viewResponses
                 );
 
+
                 resumeResponses.add(
                         resumeData
                 );
             }
+
 
             // -------------------------------------------------
             // FINAL DASHBOARD RESPONSE
@@ -321,7 +399,11 @@ public class DashboardController {
                     resumes.size()
             );
 
-            // Overall statistics
+
+            // -------------------------------------------------
+            // OVERALL STATISTICS
+            // -------------------------------------------------
+
             response.put(
                     "totalViews",
                     totalViews
@@ -342,11 +424,16 @@ public class DashboardController {
                     monthViews
             );
 
-            // All resumes
+
+            // -------------------------------------------------
+            // ALL RESUMES
+            // -------------------------------------------------
+
             response.put(
                     "resumes",
                     resumeResponses
             );
+
 
             return ResponseEntity.ok(response);
 
@@ -381,6 +468,7 @@ public class DashboardController {
         try {
 
             if (authentication == null) {
+
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
                         .body(
@@ -391,8 +479,10 @@ public class DashboardController {
                         );
             }
 
+
             String username =
                     authentication.getName();
+
 
             User user =
                     userRepository
@@ -403,11 +493,14 @@ public class DashboardController {
                                     )
                             );
 
+
             List<Resume> resumes =
                     resumeRepository.findByUser(user);
 
+
             List<Map<String, Object>> response =
                     new ArrayList<>();
+
 
             // -------------------------------------------------
             // GET VIEWS FOR EVERY RESUME
@@ -420,49 +513,70 @@ public class DashboardController {
                                 resume
                         );
 
+
                 for (ResumeView view : views) {
 
                     Map<String, Object> viewData =
                             new HashMap<>();
+
 
                     viewData.put(
                             "resumeId",
                             resume.getId()
                     );
 
+
                     viewData.put(
                             "resumeSlug",
                             resume.getResumeSlug()
                     );
+
 
                     viewData.put(
                             "resumeFileName",
                             resume.getOriginalFileName()
                     );
 
+
+                    /*
+                     * IMPORTANT:
+                     *
+                     * Previously this returned LocalDateTime
+                     * without timezone information.
+                     *
+                     * Now it returns an ISO-8601 timestamp
+                     * containing the backend timezone/offset.
+                     */
                     viewData.put(
                             "viewedAt",
-                            view.getViewedAt()
+                            formatViewedAt(
+                                    view.getViewedAt()
+                            )
                     );
+
 
                     viewData.put(
                             "ipAddress",
                             view.getIpAddress()
                     );
 
+
                     viewData.put(
                             "userAgent",
                             view.getUserAgent()
                     );
+
 
                     viewData.put(
                             "referrer",
                             view.getReferrer()
                     );
 
+
                     response.add(viewData);
                 }
             }
+
 
             return ResponseEntity.ok(response);
 
@@ -497,6 +611,7 @@ public class DashboardController {
         try {
 
             if (authentication == null) {
+
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
                         .body(
@@ -507,8 +622,10 @@ public class DashboardController {
                         );
             }
 
+
             String username =
                     authentication.getName();
+
 
             User user =
                     userRepository
@@ -519,8 +636,10 @@ public class DashboardController {
                                     )
                             );
 
+
             List<Resume> resumes =
                     resumeRepository.findByUser(user);
+
 
             // -------------------------------------------------
             // DATE RANGES
@@ -546,6 +665,7 @@ public class DashboardController {
             LocalDateTime startOfThisMonth =
                     startOfMonth.atStartOfDay();
 
+
             // -------------------------------------------------
             // CALCULATE TOTALS
             // -------------------------------------------------
@@ -554,6 +674,7 @@ public class DashboardController {
             long todayViews = 0;
             long weekViews = 0;
             long monthViews = 0;
+
 
             for (Resume resume : resumes) {
 
@@ -581,8 +702,10 @@ public class DashboardController {
                         );
             }
 
+
             Map<String, Object> response =
                     new HashMap<>();
+
 
             response.put(
                     "totalViews",
@@ -609,6 +732,7 @@ public class DashboardController {
                     resumes.size()
             );
 
+
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -629,4 +753,4 @@ public class DashboardController {
                     );
         }
     }
-} 
+}

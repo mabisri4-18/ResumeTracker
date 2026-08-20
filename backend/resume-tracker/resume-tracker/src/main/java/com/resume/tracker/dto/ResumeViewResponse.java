@@ -1,10 +1,8 @@
 package com.resume.tracker.dto;
 
-import java.time.LocalDateTime;
-
 public class ResumeViewResponse {
 
-    private LocalDateTime viewedAt;
+    private String viewedAt;
     private String ipAddress;
     private String userAgent;
     private String referrer;
@@ -13,7 +11,7 @@ public class ResumeViewResponse {
     }
 
     public ResumeViewResponse(
-            LocalDateTime viewedAt,
+            String viewedAt,
             String ipAddress,
             String userAgent,
             String referrer) {
@@ -24,11 +22,11 @@ public class ResumeViewResponse {
         this.referrer = referrer;
     }
 
-    public LocalDateTime getViewedAt() {
+    public String getViewedAt() {
         return viewedAt;
     }
 
-    public void setViewedAt(LocalDateTime viewedAt) {
+    public void setViewedAt(String viewedAt) {
         this.viewedAt = viewedAt;
     }
 
